@@ -1,14 +1,4 @@
-import { useState } from "react";
-import { Uploader } from "uploader";
-import { UploadButton } from "react-uploader";
 import Head from "next/head";
-import {
-  // Header,
-  HeroHome,
-  // Features,
-  DownloadPhoto,
-  // Footer,
-} from "../components";
 import Header from "../components/partials/Header";
 import Hero from "../components/partials/Hero";
 import Testimonials from "../components/partials/Testimonials";
