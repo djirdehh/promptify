@@ -66,12 +66,6 @@ function Generate() {
     }
   };
 
-  React.useEffect(() => {
-    if (userUploadedImage) {
-      handleSubmit(userUploadedImage);
-    }
-  }, [userUploadedImage]);
-
   const onDrop = useCallback(
     async (acceptedFiles) => {
       const base64Image = await getBase64(acceptedFiles[0]);
@@ -82,73 +76,7 @@ function Generate() {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
-  const loadingSection = loading ? (
-    <div className="m-auto h-auto flex flex-col bg-indigo-900/30 hover:bg-indigo-900/50 p-6 rounded">
-      <svg
-        className="w-12 h-12 animate-spin text-indigo-400"
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M12 4.75V6.25"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        ></path>
-        <path
-          d="M17.1266 6.87347L16.0659 7.93413"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        ></path>
-        <path
-          d="M19.25 12L17.75 12"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        ></path>
-        <path
-          d="M17.1266 17.1265L16.0659 16.0659"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        ></path>
-        <path
-          d="M12 17.75V19.25"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        ></path>
-        <path
-          d="M7.9342 16.0659L6.87354 17.1265"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        ></path>
-        <path
-          d="M6.25 12L4.75 12"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        ></path>
-        <path
-          d="M7.9342 7.93413L6.87354 6.87347"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        ></path>
-      </svg>
-    </div>
-  ) : null;
+  console.log("result", result);
 
   return (
     <div className="flex flex-col min-h-screen overflow-hidden">
@@ -238,51 +166,51 @@ function Generate() {
                         seconds!
                       </h3>
                     </div>
-                    <form action="">
-                      <div
-                        class="flex items-center justify-center flex-wrap mb-4 -mx-2"
-                        {...getRootProps()}
-                      >
-                        <div className="flex min-h-[250px] bg-white border-dashed border-2 border-black rounded p-8 text-center cursor-pointer">
-                          <div className="m-auto">
-                            <input {...getInputProps()} />
-                            {userUploadedImage ? (
-                              <div>
-                                <Image
-                                  src={userUploadedImage}
-                                  alt="Uploaded Image"
-                                  width="500"
-                                  height="400"
-                                />
-                              </div>
-                            ) : (
-                              <p className="text-black text-center">
-                                Upload or drag and drop an image here
-                              </p>
-                            )}
-                          </div>
+                    <div
+                      class="flex items-center justify-center flex-wrap mb-4 -mx-2"
+                      {...getRootProps()}
+                    >
+                      <div className="flex min-h-[250px] bg-white border-dashed border-2 border-black rounded p-8 text-center cursor-pointer">
+                        <div className="m-auto">
+                          <input {...getInputProps()} />
+                          {userUploadedImage ? (
+                            <div>
+                              <Image
+                                src={userUploadedImage}
+                                alt="Uploaded Image"
+                                width="500"
+                                height="400"
+                              />
+                            </div>
+                          ) : (
+                            <p className="text-black text-center">
+                              Upload or drag and drop an image here
+                            </p>
+                          )}
                         </div>
                       </div>
-                      <button class="group relative inline-block h-12 w-full bg-blueGray-900 rounded-md">
-                        <div class="absolute top-0 left-0 transform -translate-y-1 -translate-x-1 w-full h-full group-hover:translate-y-0 group-hover:translate-x-0 transition duration-300">
-                          <div class="flex h-full w-full items-center justify-center bg-indigo-500 border-2 border-black rounded-md transition duration-300">
-                            <span
-                              class="text-base font-black text-white"
-                              data-config-id="auto-txt-4-5"
-                            >
-                              Complement me
-                            </span>
-                          </div>
+                    </div>
+                    <button
+                      class="group relative inline-block h-12 w-full bg-blueGray-900 rounded-md"
+                      onClick={() => handleSubmit(userUploadedImage)}
+                    >
+                      <div class="absolute top-0 left-0 transform -translate-y-1 -translate-x-1 w-full h-full group-hover:translate-y-0 group-hover:translate-x-0 transition duration-300">
+                        <div class="flex h-full w-full items-center justify-center bg-indigo-500 border-2 border-black rounded-md transition duration-300">
+                          <span
+                            class="text-base font-black text-white"
+                            data-config-id="auto-txt-4-5"
+                          >
+                            Complement me
+                          </span>
                         </div>
-                      </button>
-                      <div class="flex mt-2 justify-center">
-                        <label class="text-xs text-black text-center font-bold">
-                          We don't keep any images or information about you on
-                          our server. The best type of images to upload are
-                          profile images of yourself.
-                        </label>
                       </div>
-                    </form>
+                    </button>
+                    <div class="flex mt-2 justify-center">
+                      <label class="text-xs text-black text-center font-bold">
+                        We don't keep any images or information about you
+                        whatsoever.
+                      </label>
+                    </div>
                   </div>
                 </div>
               </div>

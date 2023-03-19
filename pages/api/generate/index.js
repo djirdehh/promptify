@@ -10,8 +10,7 @@ export default async function handler(req, res) {
       version: process.env.REPLICATE_MODEL_VERSION,
       input: {
         image,
-        mode: "fast",
-        // clip_model_name: "ViT-H-14/laion2b_s32b_b79k",
+        task: "image_captioning",
       },
     }),
   });
