@@ -9,12 +9,9 @@ export default async function handler(req, res) {
     body: JSON.stringify({
       version: process.env.REPLICATE_MODEL_VERSION,
       input: {
-        original_prompt: "man wearing a black sweater",
         image,
-        prompt_edit_type: "Refinement",
-        edited_prompt: "man wearing an adidas sweatshirt",
-        self_replace_steps: 0.16,
-        cross_replace_steps: 0.5,
+        mode: "fast",
+        // clip_model_name: "ViT-H-14/laion2b_s32b_b79k",
       },
     }),
   });
