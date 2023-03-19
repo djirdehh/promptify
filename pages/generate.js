@@ -1,9 +1,11 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { useDropzone } from "react-dropzone";
+import { TwitterShareButton } from "react-twitter-embed";
 
 import PurpleBackgroundShape from "../public/images/purple-bg-shape.png";
 import PurpleBackgroundShape2 from "../public/images/purple-bg-shape-2.png";
+import Avatar01 from "../public/images/images/avatar-01.jpg";
 
 function getBase64(file) {
   return new Promise(function (resolve, reject) {
@@ -66,6 +68,13 @@ function Generate() {
     }
   };
 
+  useEffect(() => {
+    const s = document.createElement("script");
+    s.setAttribute("src", "https://platform.twitter.com/widgets.js");
+    s.setAttribute("async", "true");
+    document.head.appendChild(s);
+  }, []);
+
   const onDrop = useCallback(
     async (acceptedFiles) => {
       const base64Image = await getBase64(acceptedFiles[0]);
@@ -76,7 +85,151 @@ function Generate() {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
-  console.log("result", result);
+  const initialContent = (
+    <div className="max-w-sm mx-auto">
+      <div className="text-center mb-4">
+        <span className="block text-sm font-bold uppercase text-indigo-500">
+          complement me
+        </span>
+        <h3 className="text-lg font-bold text-black">
+          Upload an image of yourself and get complemented, in seconds!
+        </h3>
+      </div>
+      <div
+        className="flex items-center justify-center flex-wrap mb-4 -mx-2"
+        {...getRootProps()}
+      >
+        <div className="flex min-h-[250px] bg-white border-dashed border-2 border-black rounded p-8 text-center cursor-pointer">
+          <div className="m-auto">
+            <input {...getInputProps()} />
+            {userUploadedImage ? (
+              <div>
+                <Image
+                  src={userUploadedImage}
+                  alt="Uploaded Image"
+                  width="500"
+                  height="400"
+                />
+              </div>
+            ) : (
+              <p className="text-black text-center">
+                Upload or drag and drop an image here
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
+      <button
+        className="group relative inline-block h-12 w-full bg-blueGray-900 rounded-md"
+        onClick={() => handleSubmit(userUploadedImage)}
+      >
+        <div className="absolute top-0 left-0 transform -translate-y-1 -translate-x-1 w-full h-full group-hover:translate-y-0 group-hover:translate-x-0 transition duration-300">
+          <div className="flex h-full w-full items-center justify-center bg-indigo-500 border-2 border-black rounded-md transition duration-300">
+            <span
+              className="text-base font-black text-white"
+              data-config-id="auto-txt-4-5"
+            >
+              Complement me
+            </span>
+          </div>
+        </div>
+      </button>
+      <div className="flex mt-2 justify-center">
+        <label className="text-xs text-black text-center font-bold">
+          We don't keep any images or information about you whatsoever.
+        </label>
+      </div>
+    </div>
+  );
+
+  const complementContent = (
+    <div className="max-w-lg mx-auto">
+      {true && (
+        <Image
+          className="rounded-full border-2 border-slate-900 box-content m-auto mb-4"
+          src={Avatar01}
+          width="50"
+          height="50"
+        />
+      )}
+      <p className="mx-auto text-black text-center text-base sm:text-lg font-bold mb-9">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean
+        dignissim quam ultricies, placerat tellus sed, laoreet orci. Duis luctus
+        quam ac metus gravida sodales. Sed a ex accumsan, pellentesque sem eget,
+        scelerisque dolor.
+      </p>
+      <div className="text-center text-black">
+        <button className="lil-button">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            className="icon"
+          >
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="15" y1="9" x2="9" y2="15"></line>
+            <line x1="9" y1="9" x2="15" y2="15"></line>
+          </svg>
+          Start over
+        </button>
+        <TwitterShareButton
+          options={{ text: "test", via: "djirdehh" }}
+          placeholder={
+            <a
+              className="lil-button"
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://replicate.delivery/pbxt/fUke5nATU4utRkMGytgNHk9c2ynfLB37BtMgvYVc81RaEkShA/out-0.png"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                className="icon"
+              >
+                <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
+              </svg>
+              Tweet
+            </a>
+          }
+        />
+        <a
+          className="lil-button"
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://replicate.delivery/pbxt/fUke5nATU4utRkMGytgNHk9c2ynfLB37BtMgvYVc81RaEkShA/out-0.png"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            className="icon"
+          >
+            <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
+          </svg>
+          Tweet
+        </a>
+      </div>
+    </div>
+  );
 
   return (
     <div className="flex flex-col min-h-screen overflow-hidden">
@@ -135,83 +288,28 @@ function Generate() {
         </div>
       </header>
       <main className="grow">
-        <section class="relative h-screen">
-          <div class="hidden lg:block max-w-2xs lg:max-w-md absolute top-0 right-0">
+        <section className="relative h-screen">
+          <div className="hidden lg:block max-w-2xs lg:max-w-md absolute top-0 right-0">
             <Image
-              class="relative img-fluid w-60"
+              className="relative img-fluid w-60"
               src={PurpleBackgroundShape}
               width={240}
               height={330}
             />
           </div>
-          <div class="hidden lg:block absolute bottom-0 left-0 max-w-2xs lg:max-w-sm">
+          <div className="hidden lg:block absolute bottom-0 left-0 max-w-2xs lg:max-w-sm">
             <Image
-              class="relative img-fluid w-52"
+              className="relative img-fluid w-52"
               src={PurpleBackgroundShape2}
               width={240}
               height={330}
             />
           </div>
-          <div class="flex items-center justify-center h-screen">
-            <div class="relative container px-4 mx-auto">
-              <div class="xl:w-135 max-w-xl mx-auto rounded-md">
-                <div class="px-8 py-12 transform -translate-x-1 -translate-y-1 bg-[#c7ff69] font-hkgrotesk border-2 border-black rounded-md">
-                  <div class="max-w-sm mx-auto">
-                    <div class="text-center mb-4">
-                      <span class="block text-sm font-bold uppercase text-indigo-500">
-                        complement me
-                      </span>
-                      <h3 class="text-lg font-bold text-black">
-                        Upload an image of yourself and get complemented, in
-                        seconds!
-                      </h3>
-                    </div>
-                    <div
-                      class="flex items-center justify-center flex-wrap mb-4 -mx-2"
-                      {...getRootProps()}
-                    >
-                      <div className="flex min-h-[250px] bg-white border-dashed border-2 border-black rounded p-8 text-center cursor-pointer">
-                        <div className="m-auto">
-                          <input {...getInputProps()} />
-                          {userUploadedImage ? (
-                            <div>
-                              <Image
-                                src={userUploadedImage}
-                                alt="Uploaded Image"
-                                width="500"
-                                height="400"
-                              />
-                            </div>
-                          ) : (
-                            <p className="text-black text-center">
-                              Upload or drag and drop an image here
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                    <button
-                      class="group relative inline-block h-12 w-full bg-blueGray-900 rounded-md"
-                      onClick={() => handleSubmit(userUploadedImage)}
-                    >
-                      <div class="absolute top-0 left-0 transform -translate-y-1 -translate-x-1 w-full h-full group-hover:translate-y-0 group-hover:translate-x-0 transition duration-300">
-                        <div class="flex h-full w-full items-center justify-center bg-indigo-500 border-2 border-black rounded-md transition duration-300">
-                          <span
-                            class="text-base font-black text-white"
-                            data-config-id="auto-txt-4-5"
-                          >
-                            Complement me
-                          </span>
-                        </div>
-                      </div>
-                    </button>
-                    <div class="flex mt-2 justify-center">
-                      <label class="text-xs text-black text-center font-bold">
-                        We don't keep any images or information about you
-                        whatsoever.
-                      </label>
-                    </div>
-                  </div>
+          <div className="flex items-center justify-center h-screen">
+            <div className="relative container px-4 mx-auto">
+              <div className="xl:w-135 max-w-xl mx-auto rounded-md">
+                <div className="px-8 py-12 transform -translate-x-1 -translate-y-1 bg-[#c7ff69] font-hkgrotesk border-2 border-black rounded-md">
+                  {complementContent}
                 </div>
               </div>
             </div>
