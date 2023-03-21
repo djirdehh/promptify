@@ -96,23 +96,42 @@ function Generate() {
     [setUserUploadedImage]
   );
 
+  const startOver = () => {
+    setUserUploadedImage(null);
+    setResult(undefined);
+    setComplementResult(undefined);
+    setLoading(false);
+    setError(null);
+  };
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   const content = complementResult ? (
-    <div className="max-w-lg mx-auto">
-      {userUploadedImage && (
-        <Image
-          className="rounded-full border-2 border-slate-900 box-content m-auto mb-4"
-          src={userUploadedImage}
-          width="50"
-          height="50"
-        />
-      )}
-      <p className="mx-auto text-black text-center text-base sm:text-lg font-bold mb-9">
-        {complementResult}
-      </p>
+    <div className="max-w-lg mx-auto text-black">
+      <div className="mb-6 border-2 border-black bg-white rounded-md">
+        {userUploadedImage && (
+          <div className="relative flex px-5 pt-5 pb-2 items-center justify-between">
+            <Image
+              className="rounded-full border-2 border-slate-900 box-content m-auto mb-4"
+              src={userUploadedImage}
+              width="80"
+              height="80"
+            />
+            <div className="absolute bottom-0 left-0 py-px bg-black w-full"></div>
+          </div>
+        )}
+
+        <div className="flex px-5 py-5 items-center justify-between">
+          <span
+            className="text-md text-center font-bold"
+            data-config-id="auto-txt-24-1"
+          >
+            {complementResult}
+          </span>
+        </div>
+      </div>
       <div className="text-center text-black">
-        <button className="lil-button">
+        <button className="lil-button" onClick={startOver}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -202,7 +221,7 @@ function Generate() {
                   src={userUploadedImage}
                   alt="Uploaded Image"
                   width="500"
-                  height="400"
+                  height="200"
                 />
               </div>
             ) : (
@@ -313,7 +332,7 @@ function Generate() {
           <div className="flex items-center justify-center h-screen">
             <div className="relative container px-4 mx-auto">
               <div className="xl:w-135 max-w-xl mx-auto rounded-md">
-                <div className="px-8 py-12 transform -translate-x-1 -translate-y-1 bg-[#c7ff69] font-hkgrotesk border-2 border-black rounded-md">
+                <div className="px-8 pt-12 pb-8 transform -translate-x-1 -translate-y-1 bg-[#c7ff69] font-hkgrotesk border-2 border-black rounded-md">
                   {content}
                 </div>
               </div>
