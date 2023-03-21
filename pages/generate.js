@@ -24,6 +24,7 @@ function Generate() {
   const [userUploadedImage, setUserUploadedImage] = useState(null);
 
   const [result, setResult] = useState(undefined);
+  const [complementResult, setComplementResult] = useState(undefined);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -69,11 +70,23 @@ function Generate() {
   };
 
   useEffect(() => {
-    const s = document.createElement("script");
-    s.setAttribute("src", "https://platform.twitter.com/widgets.js");
-    s.setAttribute("async", "true");
-    document.head.appendChild(s);
-  }, []);
+    const makeChatGPTRequest = async (prompt) => {
+      const response = await fetch("/api/openai", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ prompt }),
+      });
+
+      const responseData = await response.json();
+      setComplementResult(responseData.data);
+    };
+
+    if (result?.output) {
+      makeChatGPTRequest(result.output);
+    }
+  }, [result]);
 
   const onDrop = useCallback(
     async (acceptedFiles) => {
@@ -85,7 +98,88 @@ function Generate() {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
-  const initialContent = (
+  const content = complementResult ? (
+    <div className="max-w-lg mx-auto">
+      {userUploadedImage && (
+        <Image
+          className="rounded-full border-2 border-slate-900 box-content m-auto mb-4"
+          src={userUploadedImage}
+          width="50"
+          height="50"
+        />
+      )}
+      <p className="mx-auto text-black text-center text-base sm:text-lg font-bold mb-9">
+        {complementResult}
+      </p>
+      <div className="text-center text-black">
+        <button className="lil-button">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            className="icon"
+          >
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="15" y1="9" x2="9" y2="15"></line>
+            <line x1="9" y1="9" x2="15" y2="15"></line>
+          </svg>
+          Start over
+        </button>
+        <button className="lil-button">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            className="icon"
+          >
+            <path d="M22 6v16h-16v-16h16zm2-2h-20v20h20v-20zm-24 17v-21h21v2h-19v19h-2z" />
+          </svg>
+          Copy to clipboard
+        </button>
+        <div className="twitter-share">
+          <TwitterShareButton
+            options={{ text: "test", via: "djirdehh" }}
+            placeholder={
+              <a
+                className="lil-button"
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://replicate.delivery/pbxt/fUke5nATU4utRkMGytgNHk9c2ynfLB37BtMgvYVc81RaEkShA/out-0.png"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  className="icon"
+                >
+                  <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
+                </svg>
+                Tweet
+              </a>
+            }
+          />
+        </div>
+      </div>
+    </div>
+  ) : (
     <div className="max-w-sm mx-auto">
       <div className="text-center mb-4">
         <span className="block text-sm font-bold uppercase text-indigo-500">
@@ -138,95 +232,6 @@ function Generate() {
         <label className="text-xs text-black text-center font-bold">
           We don't keep any images or information about you whatsoever.
         </label>
-      </div>
-    </div>
-  );
-
-  const complementContent = (
-    <div className="max-w-lg mx-auto">
-      {true && (
-        <Image
-          className="rounded-full border-2 border-slate-900 box-content m-auto mb-4"
-          src={Avatar01}
-          width="50"
-          height="50"
-        />
-      )}
-      <p className="mx-auto text-black text-center text-base sm:text-lg font-bold mb-9">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean
-        dignissim quam ultricies, placerat tellus sed, laoreet orci. Duis luctus
-        quam ac metus gravida sodales. Sed a ex accumsan, pellentesque sem eget,
-        scelerisque dolor.
-      </p>
-      <div className="text-center text-black">
-        <button className="lil-button">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            className="icon"
-          >
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="15" y1="9" x2="9" y2="15"></line>
-            <line x1="9" y1="9" x2="15" y2="15"></line>
-          </svg>
-          Start over
-        </button>
-        <TwitterShareButton
-          options={{ text: "test", via: "djirdehh" }}
-          placeholder={
-            <a
-              className="lil-button"
-              target="_blank"
-              rel="noopener noreferrer"
-              href="https://replicate.delivery/pbxt/fUke5nATU4utRkMGytgNHk9c2ynfLB37BtMgvYVc81RaEkShA/out-0.png"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                className="icon"
-              >
-                <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
-              </svg>
-              Tweet
-            </a>
-          }
-        />
-        <a
-          className="lil-button"
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://replicate.delivery/pbxt/fUke5nATU4utRkMGytgNHk9c2ynfLB37BtMgvYVc81RaEkShA/out-0.png"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            className="icon"
-          >
-            <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
-          </svg>
-          Tweet
-        </a>
       </div>
     </div>
   );
@@ -309,7 +314,7 @@ function Generate() {
             <div className="relative container px-4 mx-auto">
               <div className="xl:w-135 max-w-xl mx-auto rounded-md">
                 <div className="px-8 py-12 transform -translate-x-1 -translate-y-1 bg-[#c7ff69] font-hkgrotesk border-2 border-black rounded-md">
-                  {complementContent}
+                  {content}
                 </div>
               </div>
             </div>
